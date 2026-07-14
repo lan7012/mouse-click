@@ -41,6 +41,22 @@
 - 可执行文件已经包含在 `dist/` 下，可作为 GitHub Release 附件上传。
 - 若要在 GitHub 上发布下载，请将 `dist/gui_auto_clicker.exe` 和 `dist/auto_clicker.exe` 上传到 Release 资产。
 
+## 新增工具：鼠标范围限制
+
+- 目录：`鼠标范围/`
+- 功能：通过界面框选或手动输入坐标，使用 F7 开始限制鼠标只能在指定矩形区域内移动，F8 结束限制。
+- 默认范围：`177,48,2334,1392`
+- 运行方式：`python 鼠标范围\mouse_range.py`
+- 可执行文件：`鼠标范围\dist\mouse_range.exe`
+
+### 解析
+
+- 核心逻辑使用 `ctypes.windll.user32.ClipCursor` 实现鼠标范围限制。
+- `mouse_range.py` 中的 `_select_region()` 监听鼠标左键拖拽并绘制选区，完成后保存矩形坐标。
+- `_apply_manual_region()` 支持手动输入左、上、右、下坐标。
+- `start()` 将当前矩形传递给 `ClipCursor` 开始限制，`stop()` 传 `None` 释放限制。
+- 热键配置通过 `keyboard` 模块注册，默认 F7/F8，可在 GUI 中修改。
+
 ## 环境
 
 - Python 3.13
