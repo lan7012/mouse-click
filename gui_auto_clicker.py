@@ -63,8 +63,8 @@ class AutoClicker:
     def __init__(self):
         self.hwnd = None
         self.region = None
-        self.min_delay = 0.05
-        self.max_delay = 0.2
+        self.min_delay = 0.001
+        self.max_delay = 0.001
         self.button = 'left'
         self.background_mode = False
 
@@ -74,7 +74,10 @@ class AutoClicker:
 
     def set_target(self, hwnd, region=None):
         self.hwnd = hwnd
-        self.region = region
+        if region is not None:
+            self.region = region
+        elif self.region is None:
+            self.region = None
 
     def _random_point(self):
         if not self.hwnd:
@@ -150,46 +153,62 @@ class App:
         ttk.Checkbutton(frm, text='前台模式（占用鼠标）', variable=self.background_var).grid(column=2, row=0, columnspan=2)
 
         ttk.Label(frm, text='Min delay (s):').grid(column=0, row=2, sticky='w')
-        self.min_var = tk.DoubleVar(value=0.01)
+        self.min_var = tk.DoubleVar(value=0.001)
         ttk.Entry(frm, textvariable=self.min_var, width=10).grid(column=1, row=2, sticky='w')
         ttk.Label(frm, text='Max delay (s):').grid(column=2, row=2, sticky='w')
-        self.max_var = tk.DoubleVar(value=0.05)
+        self.max_var = tk.DoubleVar(value=0.001)
         ttk.Entry(frm, textvariable=self.max_var, width=10).grid(column=3, row=2, sticky='w')
 
+        ttk.Label(frm, text='X:').grid(column=0, row=3, sticky='w')
+        self.x_var = tk.StringVar(value='0')
+        ttk.Entry(frm, textvariable=self.x_var, width=8).grid(column=1, row=3, sticky='w')
+        ttk.Label(frm, text='Y:').grid(column=2, row=3, sticky='w')
+        self.y_var = tk.StringVar(value='0')
+        ttk.Entry(frm, textvariable=self.y_var, width=8).grid(column=3, row=3, sticky='w')
+        ttk.Label(frm, text='W:').grid(column=0, row=4, sticky='w')
+        self.w_var = tk.StringVar(value='100')
+        ttk.Entry(frm, textvariable=self.w_var, width=8).grid(column=1, row=4, sticky='w')
+        ttk.Label(frm, text='H:').grid(column=2, row=4, sticky='w')
+        self.h_var = tk.StringVar(value='100')
+        ttk.Entry(frm, textvariable=self.h_var, width=8).grid(column=3, row=4, sticky='w')
+
         # 热键设置
-        ttk.Label(frm, text='开始热键:').grid(column=0, row=3, sticky='w')
+        ttk.Label(frm, text='开始热键:').grid(column=0, row=5, sticky='w')
         self.start_hot_var = tk.StringVar(value='F6')
-        ttk.Entry(frm, textvariable=self.start_hot_var, width=10).grid(column=1, row=3, sticky='w')
-        ttk.Label(frm, text='停止热键:').grid(column=2, row=3, sticky='w')
+        ttk.Entry(frm, textvariable=self.start_hot_var, width=10).grid(column=1, row=5, sticky='w')
+        ttk.Label(frm, text='停止热键:').grid(column=2, row=5, sticky='w')
         self.stop_hot_var = tk.StringVar(value='F8')
-        ttk.Entry(frm, textvariable=self.stop_hot_var, width=10).grid(column=3, row=3, sticky='w')
+        ttk.Entry(frm, textvariable=self.stop_hot_var, width=10).grid(column=3, row=5, sticky='w')
         # 自动应用热键（无需点击）
 
-        ttk.Button(frm, text='开始', command=self.start_clicking).grid(column=0, row=4)
-        ttk.Button(frm, text='停止', command=self.stop_clicking).grid(column=1, row=4)
-        ttk.Button(frm, text='退出', command=self.exit_app).grid(column=3, row=4)
+        ttk.Button(frm, text='开始', command=self.start_clicking).grid(column=0, row=6)
+        ttk.Button(frm, text='停止', command=self.stop_clicking).grid(column=1, row=6)
+        ttk.Button(frm, text='退出', command=self.exit_app).grid(column=3, row=6)
 
-        ttk.Label(frm, text='状态:').grid(column=0, row=5, sticky='w')
+        ttk.Label(frm, text='状态:').grid(column=0, row=7, sticky='w')
         self.status_var = tk.StringVar(value='空闲')
-        ttk.Label(frm, textvariable=self.status_var).grid(column=1, row=5, columnspan=3, sticky='w')
+        ttk.Label(frm, textvariable=self.status_var).grid(column=1, row=7, columnspan=3, sticky='w')
 
-        ttk.Label(frm, text='已选 PID:').grid(column=0, row=6, sticky='w')
+        ttk.Label(frm, text='已选 PID:').grid(column=0, row=8, sticky='w')
         self.pid_var = tk.StringVar(value='')
-        ttk.Label(frm, textvariable=self.pid_var).grid(column=1, row=6, columnspan=3, sticky='w')
+        ttk.Label(frm, textvariable=self.pid_var).grid(column=1, row=8, columnspan=3, sticky='w')
 
-        ttk.Label(frm, text='已选区域:').grid(column=0, row=7, sticky='w')
+        ttk.Label(frm, text='已选区域:').grid(column=0, row=9, sticky='w')
         self.region_var = tk.StringVar(value='')
-        ttk.Label(frm, textvariable=self.region_var).grid(column=1, row=7, columnspan=3, sticky='w')
+        ttk.Label(frm, textvariable=self.region_var).grid(column=1, row=9, columnspan=3, sticky='w')
 
         # 当热键输入变化时，自动应用
         self.start_hot_var.trace_add('write', lambda *args: self.apply_hotkeys())
         self.stop_hot_var.trace_add('write', lambda *args: self.apply_hotkeys())
         # 当复选框变化时，更新 clicker 模式
         self.background_var.trace_add('write', lambda *args: self._update_clicker_mode())
+        for var in (self.x_var, self.y_var, self.w_var, self.h_var):
+            var.trace_add('write', lambda *args: self._apply_manual_region())
 
         # 默认设为后台模式（不占用鼠标）并注册热键
         self._update_clicker_mode()
         self.apply_hotkeys()
+        self._apply_manual_region()
 
     def bind_process(self):
         # 绑定输入 PID/进程 的功能已移除
@@ -220,7 +239,26 @@ class App:
                 except Exception as e:
                     self.status_var.set(f'识别失败: {e}')
             time.sleep(0.01)
-        
+
+    def _apply_manual_region(self, *args):
+        try:
+            x = int(self.x_var.get())
+            y = int(self.y_var.get())
+            w = max(0, int(self.w_var.get()))
+            h = max(0, int(self.h_var.get()))
+        except ValueError:
+            return
+        self.clicker.region = (x, y, w, h)
+        self.region_var.set(f'x={x},y={y},w={w},h={h}')
+
+    def _sync_region_fields(self, region):
+        if not region:
+            return
+        x, y, w, h = region
+        self.x_var.set(str(x))
+        self.y_var.set(str(y))
+        self.w_var.set(str(w))
+        self.h_var.set(str(h))
 
     def pick_drag(self):
         # 拖拽选取已移除
@@ -286,6 +324,7 @@ class App:
         rw = abs(x2c - x1c)
         rh = abs(y2c - y1c)
         self.clicker.region = (rx, ry, rw, rh)
+        self._sync_region_fields((rx, ry, rw, rh))
         self.region_var.set(f'x={rx},y={ry},w={rw},h={rh}')
         # 清除屏幕绘制的矩形
         self._clear_rect()
