@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['f:\\write\\gui_auto_clicker.py'],
+    ['gui_auto_clicker.py'],
     pathex=[],
     binaries=[],
     datas=[],

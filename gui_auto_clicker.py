@@ -160,16 +160,16 @@ class App:
         ttk.Entry(frm, textvariable=self.max_var, width=10).grid(column=3, row=2, sticky='w')
 
         ttk.Label(frm, text='X:').grid(column=0, row=3, sticky='w')
-        self.x_var = tk.StringVar(value='0')
+        self.x_var = tk.StringVar(value='492')
         ttk.Entry(frm, textvariable=self.x_var, width=8).grid(column=1, row=3, sticky='w')
         ttk.Label(frm, text='Y:').grid(column=2, row=3, sticky='w')
-        self.y_var = tk.StringVar(value='0')
+        self.y_var = tk.StringVar(value='60')
         ttk.Entry(frm, textvariable=self.y_var, width=8).grid(column=3, row=3, sticky='w')
         ttk.Label(frm, text='W:').grid(column=0, row=4, sticky='w')
-        self.w_var = tk.StringVar(value='100')
+        self.w_var = tk.StringVar(value='27')
         ttk.Entry(frm, textvariable=self.w_var, width=8).grid(column=1, row=4, sticky='w')
         ttk.Label(frm, text='H:').grid(column=2, row=4, sticky='w')
-        self.h_var = tk.StringVar(value='100')
+        self.h_var = tk.StringVar(value='16')
         ttk.Entry(frm, textvariable=self.h_var, width=8).grid(column=3, row=4, sticky='w')
 
         # 热键设置
@@ -444,6 +444,14 @@ class App:
 def main():
     root = tk.Tk()
     app = App(root)
+    root.update_idletasks()
+    w = root.winfo_width()
+    h = root.winfo_height()
+    sw = root.winfo_screenwidth()
+    sh = root.winfo_screenheight()
+    x = (sw - w) // 2
+    y = (sh - h) // 2
+    root.geometry(f'+{x}+{y}')
     root.mainloop()
 
 
